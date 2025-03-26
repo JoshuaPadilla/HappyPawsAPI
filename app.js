@@ -1,6 +1,7 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
+import compression from "compression";
 
 // routers
 import petRouter from "./routes/petRoutes.js";
@@ -19,6 +20,7 @@ dotenv.config({ path: "./config.env" });
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(compression());
 
 app.use("/api/happy-paws/pets", petRouter);
 app.use("/api/happy-paws/users", userRouter);

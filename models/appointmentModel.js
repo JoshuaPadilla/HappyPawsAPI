@@ -15,5 +15,9 @@ const appointmentSchema = new mongoose.Schema({
   userID: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
 });
 
+appointmentSchema.index(
+  { appointmentDate: 1, appointmentTime: 1 },
+  { unique: true }
+); // Add unique index
 const Appointment = mongoose.model("Appointment", appointmentSchema);
 export default Appointment;

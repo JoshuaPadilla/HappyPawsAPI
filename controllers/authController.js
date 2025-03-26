@@ -3,8 +3,6 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcryptjs";
 
 export const signup = async (req, res) => {
-  console.log("signup req body: ", req.body);
-
   try {
     const newUser = await User.create({
       firstName: req.body.firstName,

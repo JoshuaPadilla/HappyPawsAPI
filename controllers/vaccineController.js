@@ -54,9 +54,6 @@ export const getVaccineById = async (req, res) => {
   try {
     const { petID, vaccineID } = req.params;
 
-    console.log(petID);
-    console.log(vaccineID);
-
     // Check if user is admin or owns the pet
     const pet = await Pet.findById(petID);
     if (!pet) {
@@ -95,7 +92,6 @@ export const getVaccineById = async (req, res) => {
 // admin only controllers
 
 export const createVaccine = async (req, res) => {
-  console.log("Creating Vaccine History");
   try {
     const { petID } = req.params;
     const newVaccineHistory = {

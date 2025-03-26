@@ -223,8 +223,6 @@ export const updateUserPet = async (req, res) => {
 
         // Add the image URL to the update data
         updatedPetData = { ...updatedPetData, petImage: imageUrl };
-
-        console.log("Upload successful");
       } catch (uploadError) {
         return res.status(400).json({
           status: "error",

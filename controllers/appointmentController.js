@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Appointment from "../models/appointmentModel.js";
 import User from "../models/userModel.js";
 
@@ -44,16 +45,53 @@ export const getAppointmentTimesByDate = async (req, res) => {
 // User Controllers
 
 export const createAppointment = async (req, res) => {
+  const session = await mongoose.startSession();
+  session.startTransaction();
   try {
     const userId = req.user._id;
     const appointmentData = { ...req.body, user: userId };
 
-    const newAppointment = await Appointment.create(appointmentData);
+    // Check if the appointment time is already booked
+    // Use findOneAndUpdate with upsert: false to handle race condition
+    const existingAppointment = await Appointment.findOneAndUpdate(
+      {
+        appointmentDate: appointmentData.appointmentDate,
+        appointmentTime: appointmentData.appointmentTime,
+        status: { $ne: "Cancelled" },
+      },
+      {}, // No update, just checking existence
+      {
+        session,
+        new: true,
+        runValidators: true,
+      }
+    );
+
+    // If appointment already exists, reject the booking
+    if (existingAppointment) {
+      await session.abortTransaction();
+      session.endSession();
+      return res.status(409).json({
+        status: "failed",
+        message: "Appointment time already booked",
+      });
+    }
+
+    const newAppointment = await Appointment.create([appointmentData], {
+      session,
+    });
+
+    console.log("New Appointment: ", newAppointment);
 
     // Add appointment to user's appointments array
-    await User.findByIdAndUpdate(userId, {
-      $push: { appointments: newAppointment._id },
-    });
+    await User.findByIdAndUpdate(
+      userId,
+      { $push: { appointments: newAppointment[0]._id } },
+      { session }
+    );
+
+    await session.commitTransaction(); // Commit the transaction
+    session.endSession();
 
     res.status(201).json({
       status: "success",
@@ -72,8 +110,6 @@ export const getUserAppointments = async (req, res) => {
     const appointments = await Appointment.find({
       userID: req.user._id,
     }).populate("petID");
-
-    console.log(appointments);
 
     res.status(200).json({
       status: "success",
