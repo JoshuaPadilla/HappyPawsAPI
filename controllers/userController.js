@@ -91,7 +91,17 @@ export const updateUser = async (req, res) => {
 
 export const getAllUser = async (req, res) => {
   try {
-    const users = await User.find();
+    const users = await User.find(
+      {},
+      {
+        firstName: 1,
+        lastName: 1,
+        phone: 1,
+        profilePicture: 1,
+        address: 1,
+        _id: 1,
+      } // Select only the fields you want to return
+    );
 
     res.status(200).json({
       status: "success",
@@ -102,6 +112,42 @@ export const getAllUser = async (req, res) => {
     res.status(400).json({
       status: "failed",
       message: error.message || "Failed to fetch users",
+    });
+  }
+};
+
+export const getUser = async (req, res) => {
+  try {
+    const { userID } = req.params; // Get user ID from request parameters
+
+    // Find user by ID and exclude sensitive fields
+    const user = await User.findById(userID)
+      .select("-password -confirmPassword")
+      .populate({
+        path: "pets",
+        select: "-owner -__v",
+        populate: {
+          path: "vaccinationsRecord medicalRecord aftercares",
+        },
+      })
+      .populate("appointments"); // Populate pets field, excluding sensitive fields;
+
+    if (!user) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      user,
+    });
+  } catch (error) {
+    console.error("Error in getUser:", error);
+    res.status(400).json({
+      status: "error",
+      message: error.message,
     });
   }
 };

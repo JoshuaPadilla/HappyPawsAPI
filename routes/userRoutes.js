@@ -1,6 +1,10 @@
 import express from "express";
 import { protectRoute } from "../middleware/protectRoute.js";
-import { getAllUser, updateUser } from "../controllers/userController.js";
+import {
+  getAllUser,
+  getUser,
+  updateUser,
+} from "../controllers/userController.js";
 import { restrictToAdmin } from "../middleware/adminRoute.js";
 import upload from "../middleware/uploadMiddleware.js";
 
@@ -20,4 +24,5 @@ router.patch(
 // admin route
 router.use(restrictToAdmin);
 router.get("/", getAllUser);
+router.get("/:userID", getUser);
 export default router;

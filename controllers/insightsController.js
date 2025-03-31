@@ -36,7 +36,7 @@ export const getWeeklyAppointments = async (req, res) => {
     const weeklyAppointments = await Appointment.find({
       appointmentDate: {
         $gte: startDate.format("YYYY-MM-DD"), // Query as string
-        $lt: endDate.format("YYYY-MM-DD"), // Query as string
+        $lte: endDate.format("YYYY-MM-DD"), // Query as string
       },
     });
 
@@ -65,6 +65,8 @@ export const getWeeklyAppointments = async (req, res) => {
         totalUsers,
         newUserCount,
         averageAppointmentsPerWeek,
+        startDate: startDate.format("MMM-DD"),
+        endDate: endDate.format("MMM-DD"),
       },
     });
   } catch (error) {
@@ -94,7 +96,7 @@ export const getMonthlyAppointments = async (req, res) => {
     const monthlyAppointments = await Appointment.find({
       appointmentDate: {
         $gte: startDate.format("YYYY-MM-DD"), // Query as string
-        $lt: endDate.format("YYYY-MM-DD"), // Query as string
+        $lte: endDate.format("YYYY-MM-DD"), // Query as string
       },
     });
 
@@ -124,6 +126,8 @@ export const getMonthlyAppointments = async (req, res) => {
         totalUsers,
         newUserCount,
         averageAppointmentsPerMonth,
+        startDate: startDate.format("MMM-DD"),
+        endDate: endDate.format("MMM-DD"),
       },
     });
   } catch (error) {
