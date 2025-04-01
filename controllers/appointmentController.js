@@ -81,8 +81,6 @@ export const createAppointment = async (req, res) => {
       session,
     });
 
-    console.log("New Appointment: ", newAppointment);
-
     // Add appointment to user's appointments array
     await User.findByIdAndUpdate(
       userId,

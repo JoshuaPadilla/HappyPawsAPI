@@ -151,3 +151,60 @@ export const getUser = async (req, res) => {
     });
   }
 };
+
+export const updateUserByAdmin = async (req, res) => {
+  try {
+    // Get update data from request body
+    let updateData = { ...req.body };
+
+    if (req.body.birthday) {
+      const parsedBirthday = JSON.parse(req.body.birthday);
+      updateData.birthday = parsedBirthday;
+    }
+
+    const { userID } = req.params;
+
+    // Handle file upload if a file is included in the request
+    if (req.file) {
+      try {
+        // Upload file to S3 and get the URL
+        const imageUrl = await uploadProfileToS3(req.file);
+
+        // Add the image URL to the update data
+        updateData.profilePicture = imageUrl;
+      } catch (uploadError) {
+        return res.status(400).json({
+          status: "error",
+          message: "Failed to upload profile picture: " + uploadError.message,
+        });
+      }
+    }
+
+    // Update user in database
+    const updatedUser = await User.findByIdAndUpdate(userID, updateData, {
+      new: true, // Return the updated document
+      runValidators: true, // Run model validators
+      select: "-password -confirmPassword", // Exclude sensitive fields
+    });
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    // Send successful response
+    res.status(200).json({
+      status: "success",
+
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error in updateUser:", error);
+    res.status(400).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};

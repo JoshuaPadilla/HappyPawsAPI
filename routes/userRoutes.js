@@ -4,6 +4,7 @@ import {
   getAllUser,
   getUser,
   updateUser,
+  updateUserByAdmin,
 } from "../controllers/userController.js";
 import { restrictToAdmin } from "../middleware/adminRoute.js";
 import upload from "../middleware/uploadMiddleware.js";
@@ -24,5 +25,9 @@ router.patch(
 // admin route
 router.use(restrictToAdmin);
 router.get("/", getAllUser);
-router.get("/:userID", getUser);
+router
+  .route("/:userID")
+  .get(getUser)
+  .patch(upload.single("profilePicture"), updateUserByAdmin);
+
 export default router;
