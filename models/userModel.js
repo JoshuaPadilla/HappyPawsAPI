@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import validator from "validator";
 import bcrypt from "bcryptjs";
 import moment from "moment";
+import Pet from "./petModel.js";
+import Appointment from "./appointmentModel.js";
 
 const userBirthdaySchema = new mongoose.Schema({
   date: { type: String, required: true },
@@ -104,6 +106,34 @@ userSchema.pre("save", async function (next) {
 
   next();
 });
+
+userSchema.statics.deleteUserAndRelatedData = async function (userID) {
+  try {
+    const user = await this.findById(userID);
+
+    if (!user) {
+      return null; // User not found
+    }
+
+    // Delete related Pets
+    for (const petID of user.pets) {
+      await Pet.deletePetAndRelatedData(petID);
+    }
+
+    // Delete related Appointments (both appointments and appointmentHistory)
+    await Appointment.deleteMany({
+      _id: { $in: [...user.appointments, ...user.appointmentHistory] },
+    });
+
+    // Delete the user
+    await this.findByIdAndDelete(userID);
+
+    return { message: "User and related data deleted successfully." };
+  } catch (error) {
+    console.error("Error deleting user and related data:", error);
+    throw error; // Rethrow the error for handling in the controller
+  }
+};
 
 const User = mongoose.model("User", userSchema);
 

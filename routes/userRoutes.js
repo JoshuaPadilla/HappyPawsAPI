@@ -1,6 +1,7 @@
 import express from "express";
 import { protectRoute } from "../middleware/protectRoute.js";
 import {
+  deleteUser,
   getAllUser,
   getUser,
   updateUser,
@@ -28,6 +29,7 @@ router.get("/", getAllUser);
 router
   .route("/:userID")
   .get(getUser)
-  .patch(upload.single("profilePicture"), updateUserByAdmin);
+  .patch(upload.single("profilePicture"), updateUserByAdmin)
+  .delete(deleteUser);
 
 export default router;

@@ -208,3 +208,29 @@ export const updateUserByAdmin = async (req, res) => {
     });
   }
 };
+
+export const deleteUser = async (req, res) => {
+  try {
+    const { userID } = req.params;
+
+    const deletionResult = await User.deleteUserAndRelatedData(userID);
+
+    if (!deletionResult) {
+      return res.status(404).json({
+        status: "error",
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      message: "User and associated data deleted successfully",
+    });
+  } catch (error) {
+    console.error("Error in deleteUser:", error);
+    res.status(400).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};

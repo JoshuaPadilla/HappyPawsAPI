@@ -315,7 +315,7 @@ export const deletePet = async (req, res) => {
     await User.updateMany({ pets: pet._id }, { $pull: { pets: pet._id } });
 
     // Delete the pet
-    await Pet.findByIdAndDelete(req.params.id);
+    await Pet.deletePetAndRelatedData(req.params.id);
 
     res.status(204).json({
       status: "success",
