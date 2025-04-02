@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import Appointment from "../models/appointmentModel.js";
 import User from "../models/userModel.js";
+import moment from "moment";
 
 // Helper function to check if appointment belongs to user
 const checkAppointmentOwnership = async (userId, appointmentId) => {
@@ -106,6 +107,7 @@ export const createAppointment = async (req, res) => {
 export const getUserAppointments = async (req, res) => {
   try {
     const appointments = await Appointment.find({
+      appointmentDate: { $gte: moment().format("YYYY-MM-DD") },
       userID: req.user._id,
     }).populate("petID");
 
@@ -139,7 +141,7 @@ export const rescheduleAppointment = async (req, res) => {
         new: true,
         runValidators: true,
       }
-    );
+    ).populate("petID");
 
     res.status(200).json({
       status: "success",
@@ -238,7 +240,7 @@ export const updateAppointment = async (req, res) => {
         new: true,
         runValidators: true,
       }
-    );
+    ).populate("petID");
 
     if (!updatedAppointment) {
       return res.status(404).json({
@@ -249,9 +251,7 @@ export const updateAppointment = async (req, res) => {
 
     res.status(200).json({
       status: "success",
-      data: {
-        appointment: updatedAppointment,
-      },
+      updatedAppointment,
     });
   } catch (error) {
     res.status(400).json({

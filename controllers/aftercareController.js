@@ -69,7 +69,11 @@ export const getAftercare = async (req, res) => {
 
     const aftercare = await Aftercare.find({ petID })
       .sort("-createdAt")
-      .select("-__v");
+      .select("-__v")
+      .populate({
+        path: "petID",
+        select: "petName",
+      });
 
     res.status(200).json({
       status: "success",

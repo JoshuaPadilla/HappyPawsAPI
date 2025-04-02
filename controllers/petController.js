@@ -32,10 +32,11 @@ const uploadPetProfileToS3 = async (file, nameToChange = null) => {
 // Helper function to check pet ownership
 const checkPetOwnership = async (userId, petId) => {
   const user = await User.findById(userId);
+
   if (!user) {
     throw new Error("User not found");
   }
-  if (!user.pets.includes(petId)) {
+  if (user.role !== "admin" && !user.pets.includes(petId)) {
     throw new Error("This pet does not belong to you");
   }
   return user;

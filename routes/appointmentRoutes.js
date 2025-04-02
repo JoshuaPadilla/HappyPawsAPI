@@ -29,7 +29,7 @@ router.patch("/cancel/:id", cancelAppointment);
 router.use(restrictToAdmin);
 router.get("/all", getAllAppointments);
 router
-  .route("/:id")
+  .route("/admin/:id")
   .get(getAppointment)
   .patch(updateAppointment)
   .delete(deleteAppointment);
