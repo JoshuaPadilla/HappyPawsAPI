@@ -66,26 +66,6 @@ const addPetToUserHelper = async (userId, petData) => {
   return newPet;
 };
 
-// Admin: Create pet for specific user
-export const createPetForUser = async (req, res) => {
-  try {
-    const { userId } = req.params;
-    const petData = req.body;
-
-    const result = await addPetToUserHelper(userId, petData);
-
-    res.status(201).json({
-      status: "success",
-      data: result,
-    });
-  } catch (error) {
-    res.status(error.message.includes("not found") ? 404 : 400).json({
-      status: "failed",
-      message: error.message || "Failed to create pet for user",
-    });
-  }
-};
-
 // User: Create pet for themselves
 export const createUserPet = async (req, res) => {
   try {
@@ -126,23 +106,7 @@ export const createUserPet = async (req, res) => {
   }
 };
 
-// Get all pets (admin only)
-export const getAllPets = async (req, res) => {
-  try {
-    const pets = await Pet.find();
-    res.status(200).json({
-      status: "success",
-      results: pets.length,
-      data: { pets },
-    });
-  } catch (error) {
-    res.status(400).json({
-      status: "failed",
-      message: error.message || "Failed to fetch pets",
-    });
-  }
-};
-
+// get all pets (user)
 // Get user's pets
 export const getUserPets = async (req, res) => {
   try {
@@ -205,7 +169,7 @@ export const getPet = async (req, res) => {
   }
 };
 
-// Update user's pet
+// Update user's pet (user)
 export const updateUserPet = async (req, res) => {
   try {
     const { petId } = req.params;
@@ -256,34 +220,7 @@ export const updateUserPet = async (req, res) => {
   }
 };
 
-// Admin: Update any pet
-export const updatePet = async (req, res) => {
-  try {
-    const updatedPet = await Pet.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true,
-    });
-
-    if (!updatedPet) {
-      return res.status(404).json({
-        status: "failed",
-        message: "Pet not found",
-      });
-    }
-
-    res.status(200).json({
-      status: "success",
-      data: { pet: updatedPet },
-    });
-  } catch (error) {
-    res.status(400).json({
-      status: "failed",
-      message: error.message || "Failed to update pet",
-    });
-    console.log("updatePet error:", error);
-  }
-};
-
+// User: Delete pet (user)
 // Delete user's pet
 export const deleteUserPet = async (req, res) => {
   try {
@@ -317,7 +254,53 @@ export const deleteUserPet = async (req, res) => {
   }
 };
 
-// Admin: Delete any pet
+// Admin functions
+export const createPetForUser = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    const petData = req.body;
+
+    const result = await addPetToUserHelper(userId, petData);
+
+    res.status(201).json({
+      status: "success",
+      data: result,
+    });
+  } catch (error) {
+    res.status(error.message.includes("not found") ? 404 : 400).json({
+      status: "failed",
+      message: error.message || "Failed to create pet for user",
+    });
+  }
+};
+
+export const updatePet = async (req, res) => {
+  try {
+    const updatedPet = await Pet.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!updatedPet) {
+      return res.status(404).json({
+        status: "failed",
+        message: "Pet not found",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      data: { pet: updatedPet },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      message: error.message || "Failed to update pet",
+    });
+    console.log("updatePet error:", error);
+  }
+};
+
 export const deletePet = async (req, res) => {
   try {
     const pet = await Pet.findById(req.params.id);
@@ -342,6 +325,54 @@ export const deletePet = async (req, res) => {
     res.status(400).json({
       status: "failed",
       message: error.message || "Failed to delete pet",
+    });
+  }
+};
+
+export const getAllUsersPet = async (req, res) => {
+  try {
+    const { userID } = req.params;
+    const user = await User.findById(userID).populate({
+      path: "pets",
+      select: "-__v",
+      populate: {
+        path: "medicalRecord vaccinationsRecord aftercares",
+        select: "-__v",
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({
+        status: "failed",
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      results: user.pets.length,
+      pets: user.pets,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      message: error.message || "Failed to fetch user's pets",
+    });
+  }
+};
+
+export const getAllPets = async (req, res) => {
+  try {
+    const pets = await Pet.find();
+    res.status(200).json({
+      status: "success",
+      results: pets.length,
+      data: { pets },
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      message: error.message || "Failed to fetch pets",
     });
   }
 };

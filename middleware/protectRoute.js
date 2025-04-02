@@ -11,7 +11,6 @@ export const protectRoute = async (req, res, next) => {
 
     const token = authHeader.split(" ")[1]; // "Bearer <token>"
 
-    // eslint-disable-next-line no-undef
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     if (!decoded) {

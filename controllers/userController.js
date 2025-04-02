@@ -92,7 +92,7 @@ export const updateUser = async (req, res) => {
 export const getAllUser = async (req, res) => {
   try {
     const users = await User.find(
-      {},
+      { _id: { $ne: req.user._id } },
       {
         firstName: 1,
         lastName: 1,

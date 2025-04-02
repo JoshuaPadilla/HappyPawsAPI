@@ -9,6 +9,7 @@ import {
   updatePet,
   updateUserPet,
   deleteUserPet,
+  getAllUsersPet,
 } from "../controllers/petController.js";
 import { protectRoute } from "../middleware/protectRoute.js";
 import { restrictToAdmin } from "../middleware/adminRoute.js";
@@ -32,6 +33,7 @@ router
 // Admin routes
 router.use(restrictToAdmin);
 router.get("/all", getAllPets);
+router.get("/all/:userID", getAllUsersPet);
 router.post("/user/:userId", createPetForUser);
 router.route("/:id").get(getPet).patch(updatePet).delete(deletePet);
 
