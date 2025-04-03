@@ -123,6 +123,24 @@ export const getUserAppointments = async (req, res) => {
   }
 };
 
+export const getUserAppointmentHistory = async (req, res) => {
+  try {
+    const appointments = await Appointment.find({
+      appointmentDate: { $lt: moment().format("YYYY-MM-DD") },
+      userID: req.user._id,
+    }).populate("petID");
+
+    res.status(200).json({
+      status: "success",
+      appointments: appointments,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      message: error.message || "Failed to fetch appointments",
+    });
+  }
+};
 export const rescheduleAppointment = async (req, res) => {
   try {
     const { id } = req.params;

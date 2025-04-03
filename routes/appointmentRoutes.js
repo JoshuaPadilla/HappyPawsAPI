@@ -10,6 +10,7 @@ import {
   deleteAppointment,
   getAppointmentTimesByDate,
   getAppointmentByDate,
+  getUserAppointmentHistory,
 } from "../controllers/appointmentController.js";
 import { protectRoute } from "../middleware/protectRoute.js";
 import { restrictToAdmin } from "../middleware/adminRoute.js";
@@ -24,6 +25,7 @@ router.route("/").post(createAppointment).get(getUserAppointments);
 router.get("/times/:date", getAppointmentTimesByDate);
 router.route("/:id").patch(rescheduleAppointment);
 router.patch("/cancel/:id", cancelAppointment);
+router.get("/history", getUserAppointmentHistory);
 
 // Admin routes
 router.use(restrictToAdmin);
