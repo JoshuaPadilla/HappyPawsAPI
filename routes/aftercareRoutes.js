@@ -22,7 +22,7 @@ router.get("/:petID/:aftercareId", getAftercareById);
 
 // Admin routes (full CRUD)
 router.use(restrictToAdmin);
-router.post("/:petID", createAftercare);
+router.post("/:petID/:userID", createAftercare);
 router.patch("/:petID/:aftercareID", updateAftercare);
 router.delete("/:petID/:aftercareID", deleteAftercare);
 

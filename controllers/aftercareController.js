@@ -1,16 +1,14 @@
 import Aftercare from "../models/aftercareModel.js";
 import Pet from "../models/petModel.js";
-import moment from "moment";
 import User from "../models/userModel.js";
 
 // Create aftercare record (Admin only)
 export const createAftercare = async (req, res) => {
   try {
-    const { petID } = req.params;
+    const { petID, userID } = req.params;
     const newAftercare = {
       ...req.body,
-      userID: req.user._id,
-      startDate: moment().format("YYYY-MM-DD"),
+      userID,
     };
 
     // Check if pet exists
