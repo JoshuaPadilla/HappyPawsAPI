@@ -11,6 +11,8 @@ import {
   getAppointmentTimesByDate,
   getAppointmentByDate,
   getUserAppointmentHistory,
+  getAppointmentHistoryOfUser,
+  getActiveAppointmentOfUser,
 } from "../controllers/appointmentController.js";
 import { protectRoute } from "../middleware/protectRoute.js";
 import { restrictToAdmin } from "../middleware/adminRoute.js";
@@ -37,4 +39,6 @@ router
   .delete(deleteAppointment);
 
 router.route("/by-date/:date").get(getAppointmentByDate);
+router.get("/history/:userID", getAppointmentHistoryOfUser);
+router.get("/active/:userID", getActiveAppointmentOfUser);
 export default router;

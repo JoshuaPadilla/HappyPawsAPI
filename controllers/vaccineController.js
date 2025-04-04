@@ -9,7 +9,7 @@ const checkPetOwnership = async (userId, petId) => {
   if (!user) {
     throw new Error("User not found");
   }
-  if (!user.pets.includes(petId)) {
+  if (!user.pets.includes(petId) && user.role !== "admin") {
     throw new Error("This pet does not belong to you");
   }
   return user;

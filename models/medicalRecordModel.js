@@ -54,7 +54,7 @@ const medicalRecordSchema = new mongoose.Schema(
       required: true,
     },
     notes: String,
-    dateUpdated: String,
+    // dateUpdated: String,
   },
   {
     timestamps: true,

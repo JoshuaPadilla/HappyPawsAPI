@@ -336,3 +336,45 @@ export const getAppointmentByDate = async (req, res) => {
     });
   }
 };
+
+export const getAppointmentHistoryOfUser = async (req, res) => {
+  try {
+    const { userID } = req.params;
+
+    const appointments = await Appointment.find({
+      appointmentDate: { $lt: moment().format("YYYY-MM-DD") },
+      userID,
+    }).populate("petID");
+
+    res.status(200).json({
+      status: "success",
+      appointments: appointments,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      message: error.message || "Failed to fetch appointments",
+    });
+  }
+};
+
+export const getActiveAppointmentOfUser = async (req, res) => {
+  try {
+    const { userID } = req.params;
+
+    const appointments = await Appointment.find({
+      appointmentDate: { $gte: moment().format("YYYY-MM-DD") },
+      userID,
+    }).populate("petID");
+
+    res.status(200).json({
+      status: "success",
+      appointments: appointments,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      message: error.message || "Failed to fetch appointments",
+    });
+  }
+};
