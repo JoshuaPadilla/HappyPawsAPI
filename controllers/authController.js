@@ -15,7 +15,6 @@ export const signup = async (req, res) => {
       password: req.body.password,
       confirmPassword: req.body.confirmPassword,
       pets: [],
-      appointmentHistory: [],
       appointments: [],
     });
 
@@ -83,15 +82,3 @@ export const checkAuth = (req, res) => {
     res.status(500).json({ message: "Internal Server Error" });
   }
 };
-
-// export const restrictTo = (...roles) => {
-//   return (req, res, next) => {
-//     // roles is an array ['admin', 'user', etc]
-//     if (!roles.includes(req.user.role)) {
-//       return next(
-//         new AppError("You do not have permission to perform this action", 403)
-//       );
-//     }
-//     next();
-//   };
-// };

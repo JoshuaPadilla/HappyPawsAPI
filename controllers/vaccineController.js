@@ -2,6 +2,7 @@ import Pet from "../models/petModel.js";
 import User from "../models/userModel.js";
 import MedicalRecord from "../models/medicalRecordModel.js";
 import Vaccine from "../models/vaccineModel.js";
+import { getVaccineDueDate } from "../lib/utils.js";
 
 // Helper function to check pet ownership
 const checkPetOwnership = async (userId, petId) => {
@@ -94,8 +95,11 @@ export const getVaccineById = async (req, res) => {
 export const createVaccine = async (req, res) => {
   try {
     const { petID } = req.params;
+    const dueDate = getVaccineDueDate(req.body.validity);
+
     const newVaccineHistory = {
       ...req.body,
+      dueDate,
     };
 
     // Check if pet exists

@@ -76,12 +76,6 @@ const userSchema = new mongoose.Schema({
       ref: "Pet", // Reference to a Pet model (if you have one)
     },
   ],
-  appointmentHistory: [
-    {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Appointment", // Reference to appointment model.
-    },
-  ],
   appointments: [
     {
       type: mongoose.Schema.Types.ObjectId,

@@ -19,6 +19,11 @@ const vaccineSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
+    validity: {
+      type: String,
+      required: true,
+      enum: ["3 Months", "6 Months", "9 Months", "1 Year"],
+    },
     administeredBy: {
       type: String,
       required: true,

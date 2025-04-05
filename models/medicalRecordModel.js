@@ -7,11 +7,6 @@ const medicalRecordSchema = new mongoose.Schema(
       ref: "Pet",
       required: true,
     },
-    userID: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-      required: true,
-    },
     diagnosis: {
       type: String,
       required: true,
