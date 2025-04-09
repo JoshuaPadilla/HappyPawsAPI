@@ -139,33 +139,19 @@ export const getAftercareById = async (req, res) => {
 // Update aftercare record (Admin only)
 export const updateAftercare = async (req, res) => {
   try {
-    const { petID, aftercareID } = req.params;
-    const {
-      instructions,
-      medications,
-      followUpDate,
-      restrictions,
-      careInstructions,
-      notes,
-    } = req.body;
+    const updatedForm = req.body;
+    const { aftercareID } = req.params;
 
-    const aftercare = await Aftercare.findOneAndUpdate(
-      { _id: aftercareID, petID },
-      {
-        instructions,
-        medications,
-        followUpDate,
-        restrictions,
-        careInstructions,
-        notes,
-      },
+    const updatedAftercare = await Aftercare.findOneAndUpdate(
+      { _id: aftercareID },
+      updatedForm,
       {
         new: true,
         runValidators: true,
       }
-    );
+    ).populate("petID", "petName");
 
-    if (!aftercare) {
+    if (!updatedAftercare) {
       return res.status(404).json({
         status: "error",
         message: "Aftercare record not found",
@@ -174,9 +160,7 @@ export const updateAftercare = async (req, res) => {
 
     res.status(200).json({
       status: "success",
-      data: {
-        aftercare,
-      },
+      updatedAftercare,
     });
   } catch (error) {
     res.status(400).json({

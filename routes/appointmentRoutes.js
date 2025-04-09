@@ -24,9 +24,9 @@ router.use(protectRoute);
 
 // User routes
 router.route("/").post(createAppointment).get(getUserAppointments);
+router.patch("/cancel/:id", cancelAppointment);
 router.get("/times/:date", getAppointmentTimesByDate);
 router.route("/:id").patch(rescheduleAppointment);
-router.patch("/cancel/:id", cancelAppointment);
 router.get("/history", getUserAppointmentHistory);
 
 // Admin routes

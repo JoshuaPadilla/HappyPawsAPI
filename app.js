@@ -12,6 +12,7 @@ import aftercareRoutes from "./routes/aftercareRoutes.js";
 import medicalRoutes from "./routes/medicalRoutes.js";
 import vaccineRoutes from "./routes/vaccineRoute.js";
 import insightsRoutes from "./routes/insightsRoute.js";
+import remindersRoute from "./routes/remindersRoute.js";
 
 export const app = express();
 
@@ -30,3 +31,4 @@ app.use("/api/happy-paws/aftercare", aftercareRoutes);
 app.use("/api/happy-paws/medical", medicalRoutes);
 app.use("/api/happy-paws/vaccine", vaccineRoutes);
 app.use("/api/happy-paws/insights", insightsRoutes);
+app.use("/api/happy-paws/reminders", remindersRoute);

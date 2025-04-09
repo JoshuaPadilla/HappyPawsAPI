@@ -18,7 +18,6 @@ const aftercareSchema = new mongoose.Schema(
       enum: ["Medication", "Wound Care", "Diet and Nutrition", "Follow-up"],
       trim: true,
     },
-
     medications: [
       {
         name: {

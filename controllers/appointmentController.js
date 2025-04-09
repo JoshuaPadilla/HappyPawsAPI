@@ -224,9 +224,9 @@ export const getAllAppointments = async (req, res) => {
 
 export const getAppointment = async (req, res) => {
   try {
-    const appointment = await Appointment.findById(req.params.id)
-      .populate("petID", "name breed age")
-      .populate("userID", "firstName lastName email phone");
+    const appointment = await Appointment.findById(req.params.id).populate(
+      "petID"
+    );
 
     if (!appointment) {
       return res.status(404).json({
@@ -237,9 +237,7 @@ export const getAppointment = async (req, res) => {
 
     res.status(200).json({
       status: "success",
-      data: {
-        appointment,
-      },
+      appointment,
     });
   } catch (error) {
     res.status(400).json({

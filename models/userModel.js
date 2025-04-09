@@ -116,7 +116,7 @@ userSchema.statics.deleteUserAndRelatedData = async function (userID) {
 
     // Delete related Appointments (both appointments and appointmentHistory)
     await Appointment.deleteMany({
-      _id: { $in: [...user.appointments, ...user.appointmentHistory] },
+      _id: { $in: [...user.appointments] },
     });
 
     // Delete the user
