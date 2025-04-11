@@ -145,30 +145,35 @@ export const createVaccine = async (req, res) => {
 export const updateVaccine = async (req, res) => {
   try {
     const { petID, vaccineID } = req.params;
+    const dueDate = getVaccineDueDate(
+      req.body.validity,
+      req.body.dateAdministered
+    );
 
-    const updatedVaccine = {
+    const updatedVaccineForm = {
       ...req.body,
+      dueDate,
     };
 
-    const vaccine = await Vaccine.findOneAndUpdate(
+    const updatedVaccine = await Vaccine.findOneAndUpdate(
       { _id: vaccineID, petID },
-      updatedVaccine,
+      updatedVaccineForm,
       {
         new: true,
         runValidators: true,
       }
     );
 
-    if (!vaccine) {
+    if (!updatedVaccine) {
       return res.status(404).json({
         status: "error",
-        message: "medical record not found",
+        message: "vaccine record not found",
       });
     }
 
     res.status(200).json({
       status: "success",
-      vaccine,
+      updatedVaccine,
     });
   } catch (error) {
     res.status(400).json({

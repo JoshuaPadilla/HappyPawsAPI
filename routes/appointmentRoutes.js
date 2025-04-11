@@ -13,6 +13,7 @@ import {
   getUserAppointmentHistory,
   getAppointmentHistoryOfUser,
   getActiveAppointmentOfUser,
+  markAppointmentAsCompleted,
 } from "../controllers/appointmentController.js";
 import { protectRoute } from "../middleware/protectRoute.js";
 import { restrictToAdmin } from "../middleware/adminRoute.js";
@@ -41,4 +42,6 @@ router
 router.route("/by-date/:date").get(getAppointmentByDate);
 router.get("/history/:userID", getAppointmentHistoryOfUser);
 router.get("/active/:userID", getActiveAppointmentOfUser);
+router.patch("/completed/:id", markAppointmentAsCompleted);
+
 export default router;

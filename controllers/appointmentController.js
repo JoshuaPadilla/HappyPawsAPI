@@ -4,12 +4,15 @@ import User from "../models/userModel.js";
 import moment from "moment";
 
 // Helper function to check if appointment belongs to user
-const checkAppointmentOwnership = async (userId, appointmentId) => {
+const checkAppointmentOwnership = async (user, appointmentId) => {
   const appointment = await Appointment.findById(appointmentId);
   if (!appointment) {
     throw new Error("Appointment not found");
   }
-  if (appointment.userID.toString() !== userId.toString()) {
+  if (
+    appointment.userID.toString() !== user._id.toString() &&
+    user.role !== "admin"
+  ) {
     throw new Error("This appointment does not belong to you");
   }
   return appointment;
@@ -178,7 +181,7 @@ export const cancelAppointment = async (req, res) => {
     const { id } = req.params;
 
     // Check ownership
-    await checkAppointmentOwnership(req.user._id, id);
+    await checkAppointmentOwnership(req.user, id);
 
     await Appointment.findByIdAndUpdate(
       id,
@@ -373,6 +376,36 @@ export const getActiveAppointmentOfUser = async (req, res) => {
     res.status(400).json({
       status: "failed",
       message: error.message || "Failed to fetch appointments",
+    });
+  }
+};
+
+export const markAppointmentAsCompleted = async (req, res) => {
+  try {
+    const completedAppointment = await Appointment.findByIdAndUpdate(
+      req.params.id,
+      { status: "Completed" },
+      {
+        new: true,
+        runValidators: true,
+      }
+    ).populate("petID");
+
+    if (!completedAppointment) {
+      return res.status(404).json({
+        status: "failed",
+        message: "Appointment not found",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      completedAppointment,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      message: error.message || "Failed to mark appointment",
     });
   }
 };

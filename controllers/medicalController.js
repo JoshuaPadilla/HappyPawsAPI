@@ -178,20 +178,20 @@ export const updateMedicalRecord = async (req, res) => {
   try {
     const { petID, medicalID } = req.params;
 
-    const updatedMedicalRecord = {
+    const updatedMedicalRecordForm = {
       ...req.body,
     };
 
-    const medicalRecord = await MedicalRecord.findOneAndUpdate(
+    const updatedMedicalRecord = await MedicalRecord.findOneAndUpdate(
       { _id: medicalID, petID },
-      updatedMedicalRecord,
+      updatedMedicalRecordForm,
       {
         new: true,
         runValidators: true,
       }
     );
 
-    if (!medicalRecord) {
+    if (!updatedMedicalRecord) {
       return res.status(404).json({
         status: "error",
         message: "medical record not found",
@@ -200,7 +200,7 @@ export const updateMedicalRecord = async (req, res) => {
 
     res.status(200).json({
       status: "success",
-      medicalRecord,
+      updatedMedicalRecord,
     });
   } catch (error) {
     res.status(400).json({
