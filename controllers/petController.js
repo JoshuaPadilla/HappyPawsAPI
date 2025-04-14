@@ -1,6 +1,10 @@
 import Pet from "../models/petModel.js";
 import User from "../models/userModel.js";
-import { s3Client, PutObjectCommand } from "../lib/s3Client.js";
+import {
+  s3Client,
+  PutObjectCommand,
+  DeleteObjectCommand,
+} from "../lib/s3Client.js";
 import { generateUniqueFileName } from "../lib/utils.js";
 
 const uploadPetProfileToS3 = async (file, nameToChange = null) => {
@@ -32,6 +36,7 @@ const uploadPetProfileToS3 = async (file, nameToChange = null) => {
 // Helper function to check pet ownership
 const checkPetOwnership = async (userId, petId) => {
   const user = await User.findById(userId);
+  console.log(petId);
 
   if (!user) {
     throw new Error("User not found");
@@ -224,11 +229,40 @@ export const updateUserPet = async (req, res) => {
 // User: Delete pet (user)
 // Delete user's pet
 export const deleteUserPet = async (req, res) => {
+  console.log("here");
   try {
     const { petId } = req.params;
     await checkPetOwnership(req.user._id, petId);
 
     // Remove pet from user's pets array
+
+    const pet = await Pet.findById(petId);
+
+    if (!pet) {
+      return res.status(404).json({ message: "Pet not found" });
+    }
+
+    let imageKey;
+
+    if (pet.petImage) {
+      imageKey = `pet-images/${pet.petImage.split("/").at(-1)}`;
+    }
+
+    if (imageKey) {
+      const deleteParams = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: imageKey,
+      };
+
+      try {
+        const deleteCommand = new DeleteObjectCommand(deleteParams);
+        await s3Client.send(deleteCommand);
+        console.log(`Successfully deleted image: ${imageKey} from S3`);
+      } catch (err) {
+        console.error("Error deleting from S3:", err);
+      }
+    }
+
     await User.findByIdAndUpdate(
       req.user._id,
       { $pull: { pets: petId } },
@@ -248,6 +282,7 @@ export const deleteUserPet = async (req, res) => {
       status: "success",
     });
   } catch (error) {
+    console.log(error);
     res.status(error.message.includes("not found") ? 404 : 403).json({
       status: "failed",
       message: error.message || "Failed to delete pet",

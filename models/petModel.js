@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import Vaccine from "./vaccineModel.js";
 import MedicalRecord from "./medicalRecordModel.js";
 import Aftercare from "./aftercareModel.js";
+import { DeleteObjectCommand, s3Client } from "../lib/s3Client.js";
 
 const petSchema = new mongoose.Schema({
   petName: {
@@ -39,6 +40,26 @@ petSchema.statics.deletePetAndRelatedData = async function (petID) {
     await Vaccine.deleteMany({ _id: { $in: pet.vaccinationsRecord } });
     await MedicalRecord.deleteMany({ _id: { $in: pet.medicalRecord } });
     await Aftercare.deleteMany({ _id: { $in: pet.aftercares } });
+
+    let imageKey;
+
+    if (pet.petImage) {
+      imageKey = `pet-images/${pet.petImage.split("/").at(-1)}`;
+    }
+
+    if (imageKey) {
+      const deleteParams = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: imageKey,
+      };
+
+      try {
+        const deleteCommand = new DeleteObjectCommand(deleteParams);
+        await s3Client.send(deleteCommand);
+      } catch (err) {
+        console.error("Error deleting from S3 (pet model statics):", err);
+      }
+    }
 
     await this.findByIdAndDelete(petID);
 

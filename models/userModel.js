@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import moment from "moment";
 import Pet from "./petModel.js";
 import Appointment from "./appointmentModel.js";
+import { DeleteObjectCommand, s3Client } from "../lib/s3Client.js";
 
 const userBirthdaySchema = new mongoose.Schema({
   date: { type: String, required: true },
@@ -107,6 +108,26 @@ userSchema.statics.deleteUserAndRelatedData = async function (userID) {
 
     if (!user) {
       return null; // User not found
+    }
+
+    let imageKey;
+
+    if (user.profilePicture) {
+      imageKey = `profile-pictures/${user.profilePicture.split("/").at(-1)}`;
+    }
+
+    if (imageKey) {
+      const deleteParams = {
+        Bucket: process.env.BUCKET_NAME,
+        Key: imageKey,
+      };
+
+      try {
+        const deleteCommand = new DeleteObjectCommand(deleteParams);
+        await s3Client.send(deleteCommand);
+      } catch (err) {
+        console.error("Error deleting from S3 (user model statics):", err);
+      }
     }
 
     // Delete related Pets
