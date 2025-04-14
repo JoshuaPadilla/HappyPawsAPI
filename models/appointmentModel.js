@@ -4,7 +4,11 @@ const appointmentSchema = new mongoose.Schema({
   appointmentDate: { type: String, required: true },
   appointmentTime: { type: String, required: true },
   appointmentNotes: { type: String },
-  typeOfService: { type: String, required: true },
+  typeOfService: {
+    type: String,
+    required: true,
+    enum: ["Vaccination", "Checkup", "Grooming", "Dental"],
+  },
   status: {
     type: String,
     required: true,
