@@ -2,7 +2,6 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import compression from "compression";
-
 // routers
 import petRouter from "./routes/petRoutes.js";
 import userRouter from "./routes/userRoutes.js";
@@ -13,6 +12,7 @@ import medicalRoutes from "./routes/medicalRoutes.js";
 import vaccineRoutes from "./routes/vaccineRoute.js";
 import insightsRoutes from "./routes/insightsRoute.js";
 import remindersRoute from "./routes/remindersRoute.js";
+import askMessageRouter from "./routes/askMessageRoute.js";
 
 export const app = express();
 
@@ -32,3 +32,4 @@ app.use("/api/happy-paws/medical", medicalRoutes);
 app.use("/api/happy-paws/vaccine", vaccineRoutes);
 app.use("/api/happy-paws/insights", insightsRoutes);
 app.use("/api/happy-paws/reminders", remindersRoute);
+app.use("/api/happy-paws/ask", askMessageRouter);

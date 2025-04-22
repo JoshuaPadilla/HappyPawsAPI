@@ -24,8 +24,6 @@ const uploadProfileToS3 = async (file) => {
     const command = new PutObjectCommand(uploadParams);
     await s3Client.send(command);
 
-    console.log(`profile-pictures/${filename}`);
-
     // Return the URL where the file can be accessed
     return `https://${process.env.BUCKET_NAME}.s3.${process.env.BUCKET_REGION}.amazonaws.com/profile-pictures/${filename}`;
   } catch (error) {
