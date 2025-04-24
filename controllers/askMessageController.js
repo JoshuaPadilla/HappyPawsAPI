@@ -1,5 +1,4 @@
 export const ask = async (req, res) => {
-  console.log("asked");
   try {
     const message = `${req.body.message} You are a helpful and friendly AI assistant whose sole purpose is to answer questions related to pets. If a question is not about domestic animals kept for companionship or pleasure, politely state that you can only answer pet-related inquiries. Please provide informative and accurate responses within the scope of pet care, behavior, breeds, health, and general pet ownership.`;
 

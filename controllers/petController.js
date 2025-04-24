@@ -36,7 +36,6 @@ const uploadPetProfileToS3 = async (file, nameToChange = null) => {
 // Helper function to check pet ownership
 const checkPetOwnership = async (userId, petId) => {
   const user = await User.findById(userId);
-  console.log(petId);
 
   if (!user) {
     throw new Error("User not found");
@@ -86,8 +85,6 @@ export const createUserPet = async (req, res) => {
 
         // Add the image URL to the update data
         petData = { ...petData, petImage: imageUrl };
-
-        console.log("Upload successful");
       } catch (uploadError) {
         return res.status(400).json({
           status: "error",
@@ -107,8 +104,6 @@ export const createUserPet = async (req, res) => {
       status: "failed",
       message: error.message || "Failed to create pet",
     });
-
-    console.log("Adding Pet Error: ", error);
   }
 };
 
@@ -229,7 +224,6 @@ export const updateUserPet = async (req, res) => {
 // User: Delete pet (user)
 // Delete user's pet
 export const deleteUserPet = async (req, res) => {
-  console.log("here");
   try {
     const { petId } = req.params;
     await checkPetOwnership(req.user._id, petId);
@@ -257,7 +251,6 @@ export const deleteUserPet = async (req, res) => {
       try {
         const deleteCommand = new DeleteObjectCommand(deleteParams);
         await s3Client.send(deleteCommand);
-        console.log(`Successfully deleted image: ${imageKey} from S3`);
       } catch (err) {
         console.error("Error deleting from S3:", err);
       }

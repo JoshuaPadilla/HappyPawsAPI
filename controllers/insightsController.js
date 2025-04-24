@@ -70,7 +70,7 @@ export const getWeeklyAppointments = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    console.log("error in get weekly appintments: ", error);
     res.status(400).json({
       status: "failed",
       message: "Server internal error",
@@ -131,7 +131,7 @@ export const getMonthlyAppointments = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
+    console.log("error in get monthly appointments: ", error);
     res.status(400).json({
       status: "failed",
       message: "Server internal error",
