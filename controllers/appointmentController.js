@@ -250,6 +250,31 @@ export const getAppointment = async (req, res) => {
   }
 };
 
+export const getOneAppointment = async (req, res) => {
+  try {
+    const appointment = await Appointment.findById(req.params.id).populate(
+      "petID"
+    );
+
+    if (!appointment) {
+      return res.status(404).json({
+        status: "failed",
+        message: "Appointment not found",
+      });
+    }
+
+    res.status(200).json({
+      status: "success",
+      appointment,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "failed",
+      message: error.message || "Failed to fetch appointment",
+    });
+  }
+};
+
 export const updateAppointment = async (req, res) => {
   try {
     const updatedAppointment = await Appointment.findByIdAndUpdate(

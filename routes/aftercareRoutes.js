@@ -6,6 +6,7 @@ import {
   updateAftercare,
   deleteAftercare,
   getUserAftercare,
+  getOneAftercare,
 } from "../controllers/aftercareController.js";
 import { protectRoute } from "../middleware/protectRoute.js";
 import { restrictToAdmin } from "../middleware/adminRoute.js";
@@ -17,6 +18,7 @@ router.use(protectRoute);
 
 // User routes (view only)
 router.get("/", getUserAftercare);
+router.get("/all/:aftercareID", getOneAftercare);
 router.get("/:petID", getAftercare);
 router.get("/:petID/:aftercareId", getAftercareById);
 

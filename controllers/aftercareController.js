@@ -86,6 +86,30 @@ export const getAftercare = async (req, res) => {
   }
 };
 
+export const getOneAftercare = async (req, res) => {
+  try {
+    const { aftercareID } = req.params;
+
+    const aftercare = await Aftercare.findById({ _id: aftercareID })
+      .sort("-createdAt")
+      .select("-__v")
+      .populate({
+        path: "petID",
+        select: "petName",
+      });
+
+    res.status(200).json({
+      status: "success",
+      aftercare,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: "error",
+      message: error.message,
+    });
+  }
+};
+
 // Get single aftercare record
 export const getAftercareById = async (req, res) => {
   try {

@@ -14,6 +14,7 @@ import {
   getAppointmentHistoryOfUser,
   getActiveAppointmentOfUser,
   markAppointmentAsCompleted,
+  getOneAppointment,
 } from "../controllers/appointmentController.js";
 import { protectRoute } from "../middleware/protectRoute.js";
 import { restrictToAdmin } from "../middleware/adminRoute.js";
@@ -25,6 +26,8 @@ router.use(protectRoute);
 
 // User routes
 router.route("/").post(createAppointment).get(getUserAppointments);
+router.get("/all/:id", getOneAppointment);
+
 router.patch("/cancel/:id", cancelAppointment);
 router.get("/times/:date", getAppointmentTimesByDate);
 router.route("/:id").patch(rescheduleAppointment);
