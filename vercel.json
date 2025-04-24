@@ -2,12 +2,12 @@
   "version": 2,
   "builds": [
     {
-      "src": "app.js",
+      "src": "server.js",
       "use": "@vercel/node"
     }
   ],
   "routes": [
-    { "src": "/api/happy-paws/(.*)", "dest": "/app.js" },
-    { "src": "/(.*)", "dest": "/app.js" }
+    { "src": "/api/happy-paws/(.*)", "dest": "/server.js" },
+    { "src": "/(.*)", "dest": "/server.js" }
   ]
 }
