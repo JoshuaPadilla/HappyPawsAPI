@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "happy-paws-backend",
   "version": "1.0.0",
   "description": "HappyPaws Backend",
   "main": "server.js",

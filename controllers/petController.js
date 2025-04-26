@@ -275,7 +275,7 @@ export const deleteUserPet = async (req, res) => {
       status: "success",
     });
   } catch (error) {
-    console.log(error);
+    console.log("error in delete user pet: ", error);
     res.status(error.message.includes("not found") ? 404 : 403).json({
       status: "failed",
       message: error.message || "Failed to delete pet",
@@ -322,11 +322,11 @@ export const updatePet = async (req, res) => {
       data: { pet: updatedPet },
     });
   } catch (error) {
+    console.log("updatePet error:", error);
     res.status(400).json({
       status: "failed",
       message: error.message || "Failed to update pet",
     });
-    console.log("updatePet error:", error);
   }
 };
 
